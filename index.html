@@ -2,104 +2,36 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Lector PDF Persistente por Archivo</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-  <style>
-    body { font-family: sans-serif; text-align: center; background: #f2f2f2; }
-    canvas { border: 1px solid #ccc; margin-top: 1rem; }
-    button { margin: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lector PDF Persistente</title>
+  
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js" defer></script>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Script principal -->
+  <script src="js/pdf-reader.js" defer></script>
 </head>
 <body>
-  <h2>Lector PDF persistente por archivo</h2>
-  <input type="file" id="fileInput" accept="application/pdf" />
-  <br>
-  <button id="prev">⬅️ Anterior</button>
-  <button id="next">➡️ Siguiente</button>
-  <p>Página <span id="page_num"></span> de <span id="page_count"></span></p>
-  <canvas id="pdf-render"></canvas>
+  <header>
+    <h1>Lector PDF Persistente</h1>
+    <p>Abre cualquier PDF local y el sitio recordará tu progreso automáticamente.</p>
+  </header>
 
-  <script>
-    const pdfjsLib = window['pdfjs-dist/build/pdf'];
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-    let pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null, scale = 1.5;
-    let currentFileKey = null; // nombre o ruta del PDF actual
-    const canvas = document.getElementById('pdf-render');
-    const ctx = canvas.getContext('2d');
+  <main>
+    <input type="file" id="fileInput" accept="application/pdf" />
+    <div class="controls">
+      <button id="prev">⬅️ Anterior</button>
+      <button id="next">➡️ Siguiente</button>
+    </div>
+    <p>Página <span id="page_num">0</span> de <span id="page_count">0</span></p>
+    <canvas id="pdf-render"></canvas>
+  </main>
 
-    // Obtener y guardar progreso por archivo
-    function getProgress() {
-      return JSON.parse(localStorage.getItem('progresoPDF') || '{}');
-    }
-
-    function saveProgress(fileKey, page) {
-      const data = getProgress();
-      data[fileKey] = page;
-      localStorage.setItem('progresoPDF', JSON.stringify(data));
-    }
-
-    function loadProgress(fileKey) {
-      const data = getProgress();
-      return data[fileKey] || 1;
-    }
-
-    function renderPage(num) {
-      pageRendering = true;
-      pdfDoc.getPage(num).then(function(page) {
-        const viewport = page.getViewport({ scale });
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-
-        const renderContext = { canvasContext: ctx, viewport };
-        const renderTask = page.render(renderContext);
-        renderTask.promise.then(() => {
-          pageRendering = false;
-          document.getElementById('page_num').textContent = num;
-          saveProgress(currentFileKey, num);
-          if (pageNumPending !== null) {
-            renderPage(pageNumPending);
-            pageNumPending = null;
-          }
-        });
-      });
-    }
-
-    function queueRenderPage(num) {
-      if (pageRendering) pageNumPending = num;
-      else renderPage(num);
-    }
-
-    document.getElementById('prev').addEventListener('click', () => {
-      if (pageNum <= 1) return;
-      pageNum--;
-      queueRenderPage(pageNum);
-    });
-
-    document.getElementById('next').addEventListener('click', () => {
-      if (pageNum >= pdfDoc.numPages) return;
-      pageNum++;
-      queueRenderPage(pageNum);
-    });
-
-    document.getElementById('fileInput').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      currentFileKey = file.name; // usamos el nombre como ID
-      const savedPage = loadProgress(currentFileKey);
-
-      const fileReader = new FileReader();
-      fileReader.onload = function() {
-        const typedarray = new Uint8Array(this.result);
-        pdfjsLib.getDocument(typedarray).promise.then(function(pdfDoc_) {
-          pdfDoc = pdfDoc_;
-          document.getElementById('page_count').textContent = pdfDoc.numPages;
-          pageNum = savedPage <= pdfDoc.numPages ? savedPage : 1;
-          renderPage(pageNum);
-        });
-      };
-      fileReader.readAsArrayBuffer(file);
-    });
-  </script>
+  <footer>
+    <p>⚡ 100% local | Persistencia con localStorage | Sin subir tus archivos</p>
+  </footer>
 </body>
 </html>

@@ -1,0 +1,73 @@
+/* Reset y tipografía */
+body {
+  font-family: 'Inter', sans-serif;
+  background: #1a1a2e;
+  color: #eaeaea;
+  margin: 0;
+  padding: 2rem;
+  text-align: center;
+}
+
+h1 {
+  font-weight: 600;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #f0a500;
+}
+
+p { margin-bottom: 1rem; color: #ccc; }
+
+input[type="file"] {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: none;
+  background: #162447;
+  color: #eaeaea;
+  cursor: pointer;
+}
+
+button {
+  margin: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #f0a500, #ff5733);
+  color: white;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+canvas {
+  margin-top: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  max-width: 100%;
+  height: auto;
+  background: #fff;
+}
+
+#page_num, #page_count {
+  font-weight: 600;
+  color: #f0a500;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+footer {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: #888;
+}

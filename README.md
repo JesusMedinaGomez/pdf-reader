@@ -1,31 +1,41 @@
 # 📚 Lector PDF Persistente
 
-Un lector PDF simple, **sin base de datos**, 100% local y privado.  
-Funciona completamente en el navegador y recuerda en qué página te quedaste para **cada PDF**, usando `localStorage`.
+Un lector PDF **moderno, rápido y totalmente local**.  
+Ideal para leer tus PDFs sin subirlos a internet, con la comodidad de que **recuerda automáticamente en qué página te quedaste**, para cada archivo, usando `localStorage`.
 
-## 🌍 Demo
+### 🔹 Qué hace
 
-👉 [Ver en GitHub Pages](https://TU_USUARIO.github.io/pdf-reader/)
+- Permite abrir cualquier PDF de tu computadora.  
+- Navegar página por página con botones intuitivos.  
+- Guarda tu progreso automáticamente por archivo.  
+- Funciona 100% en tu navegador, sin servidor ni base de datos.  
 
-*(Reemplaza `TU_USUARIO` con tu nombre de usuario de GitHub)*
+### 🌍 Demo
 
-## 🚀 Cómo usar
+👉 [Ver en GitHub Pages](https://jesusmedinagomez.github.io/pdf-reader/)
 
-1. Abre el sitio.
-2. Haz clic en **“Seleccionar archivo”** y elige un PDF de tu computadora.
-3. Navega con los botones **Anterior / Siguiente**.
-4. El lector recordará automáticamente la última página vista de cada archivo.
+### 🚀 Cómo usar
 
-✅ **Privado:** tus PDFs nunca se suben a Internet.  
-✅ **Persistente:** guarda tu progreso localmente por nombre de archivo.  
-✅ **Sin instalación:** solo HTML + JavaScript + [pdf.js](https://mozilla.github.io/pdf.js/).
+1. Abre el sitio en tu navegador.  
+2. Haz clic en **“Seleccionar archivo”** y elige tu PDF.  
+3. Usa los botones **⬅️ Anterior** y **➡️ Siguiente** para navegar.  
+4. Tu progreso se guardará automáticamente y se restaurará la próxima vez que abras ese PDF.  
 
-## 🛠️ Tecnologías
+**Nota:** Todo se guarda localmente en tu navegador; nadie más tiene acceso a tus PDFs.
 
-- [pdf.js](https://mozilla.github.io/pdf.js/)
-- HTML5, JavaScript y LocalStorage
-- Hospedado en [GitHub Pages](https://pages.github.com/)
+### 🛠️ Tecnologías
 
-## 📄 Licencia
+- [pdf.js](https://mozilla.github.io/pdf.js/) — motor para renderizar PDFs.  
+- HTML5, CSS3 y JavaScript.  
+- `localStorage` para persistencia.  
+- Hospedado en [GitHub Pages](https://pages.github.com/).
+
+### 💡 Tips para el usuario
+
+- Puedes abrir varios PDFs distintos; cada uno recordará su última página.  
+- Funciona en navegadores modernos: Chrome, Firefox, Edge, Safari.  
+- El progreso se borra si limpias el almacenamiento local del navegador.
+
+### 📄 Licencia
 
 MIT — puedes usarlo y modificarlo libremente.
