@@ -56,30 +56,30 @@ document.addEventListener('DOMContentLoaded', () => {
     spinner.style.display = 'block';
 
     pdfDoc.getPage(num).then(page => {
-      // Escala adaptativa y ligera
-      const containerWidth = Math.min(window.innerWidth * 0.9, 800);
-      const viewport = page.getViewport({ scale: 1 });
-      const scale = Math.min(containerWidth / viewport.width, 0.9);
-      const scaledViewport = page.getViewport({ scale });
+        // Escala adaptativa responsiva
+        const containerWidth = Math.min(window.innerWidth * 0.9, 1200);
+        const viewport = page.getViewport({ scale: 1 });
+        const scale = Math.min(containerWidth / viewport.width, 1.5);
+        const scaledViewport = page.getViewport({ scale });
 
-      canvas.height = scaledViewport.height;
-      canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+        canvas.width = scaledViewport.width;
 
-      page.render({ canvasContext: ctx, viewport: scaledViewport }).promise
+        page.render({ canvasContext: ctx, viewport: scaledViewport }).promise
         .then(() => {
-          pageNum = num;
-          saveProgress(currentFileKey, num);
-          gotoInput.value = num;
-          pageCounter.textContent = `/ ${pdfDoc.numPages}`;
+            pageNum = num;
+            saveProgress(currentFileKey, num);
+            gotoInput.value = num;
+            pageCounter.textContent = `/ ${pdfDoc.numPages}`;
         })
         .finally(() => {
-          rendering = false;
-          spinner.style.display = 'none';
+            rendering = false;
+            spinner.style.display = 'none';
         });
     }).catch(err => {
-      console.error('Error al renderizar página:', err);
-      rendering = false;
-      spinner.style.display = 'none';
+        console.error('Error al renderizar página:', err);
+        rendering = false;
+        spinner.style.display = 'none';
     });
   }
 
