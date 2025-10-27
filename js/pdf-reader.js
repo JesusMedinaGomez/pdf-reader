@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const pdfjsLib = window['pdfjs-dist/build/pdf'];
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
   const fileInput = document.getElementById('fileInput');
   const canvas = document.getElementById('pdf-render');
@@ -11,30 +12,54 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnNext = document.getElementById('btnNext');
   const pageCounter = document.getElementById('pageCounter');
 
+  // Crear spinner
+  const spinner = document.createElement('div');
+  spinner.id = 'spinner';
+  spinner.textContent = 'Cargando PDF...';
+  spinner.style.position = 'fixed';
+  spinner.style.top = '50%';
+  spinner.style.left = '50%';
+  spinner.style.transform = 'translate(-50%, -50%)';
+  spinner.style.padding = '1rem 2rem';
+  spinner.style.background = '#f0a500';
+  spinner.style.color = '#1a1a2e';
+  spinner.style.borderRadius = '12px';
+  spinner.style.fontWeight = '600';
+  spinner.style.display = 'none';
+  document.body.appendChild(spinner);
+
   let pdfDoc = null;
   let pageNum = 1;
   let currentFileKey = null;
+  let rendering = false;
 
   // Persistencia
   function getProgress() {
     return JSON.parse(localStorage.getItem('progresoPDF') || '{}');
   }
+
   function saveProgress(fileKey, page) {
     const data = getProgress();
     data[fileKey] = page;
     localStorage.setItem('progresoPDF', JSON.stringify(data));
   }
+
   function loadProgress(fileKey) {
     const data = getProgress();
     return data[fileKey] || 1;
   }
 
+  // Renderizar página
   function renderPage(num) {
-    if (!pdfDoc) return;
+    if (!pdfDoc || rendering) return;
+    rendering = true;
+    spinner.style.display = 'block';
+
     pdfDoc.getPage(num).then(page => {
+      // Escala adaptativa y ligera
       const containerWidth = Math.min(window.innerWidth * 0.9, 800);
       const viewport = page.getViewport({ scale: 1 });
-      const scale = containerWidth / viewport.width;
+      const scale = Math.min(containerWidth / viewport.width, 0.9);
       const scaledViewport = page.getViewport({ scale });
 
       canvas.height = scaledViewport.height;
@@ -42,20 +67,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
       page.render({ canvasContext: ctx, viewport: scaledViewport }).promise
         .then(() => {
+          pageNum = num;
           saveProgress(currentFileKey, num);
           gotoInput.value = num;
           pageCounter.textContent = `/ ${pdfDoc.numPages}`;
         })
-        .catch(err => console.error('Error renderizando página:', err));
-    }).catch(err => console.error('Error al obtener página:', err));
+        .finally(() => {
+          rendering = false;
+          spinner.style.display = 'none';
+        });
+    }).catch(err => {
+      console.error('Error al renderizar página:', err);
+      rendering = false;
+      spinner.style.display = 'none';
+    });
   }
 
+  // Cambiar página
   function changePage(offset) {
-    if (!pdfDoc) return;
-    pageNum += offset;
-    if (pageNum < 1) pageNum = 1;
-    if (pageNum > pdfDoc.numPages) pageNum = pdfDoc.numPages;
-    renderPage(pageNum);
+    if (!pdfDoc || rendering) return;
+    let newPage = pageNum + offset;
+    if (newPage < 1) newPage = 1;
+    if (newPage > pdfDoc.numPages) newPage = pdfDoc.numPages;
+    renderPage(newPage);
   }
 
   // Cargar PDF
@@ -68,11 +102,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const reader = new FileReader();
     reader.onload = function() {
       const typedarray = new Uint8Array(this.result);
-      pdfjsLib.getDocument(typedarray).promise.then(pdf_ => {
-        pdfDoc = pdf_;
-        pageNum = Math.min(savedPage, pdfDoc.numPages);
-        renderPage(pageNum);
-      }).catch(err => console.error('Error al cargar PDF:', err));
+      pdfjsLib.getDocument(typedarray).promise
+        .then(pdf_ => {
+          pdfDoc = pdf_;
+          renderPage(Math.min(savedPage, pdfDoc.numPages));
+        })
+        .catch(err => {
+          console.error('Error al cargar PDF:', err);
+          alert('No se pudo cargar el PDF. Intenta con otro archivo.');
+        });
     };
     reader.readAsArrayBuffer(file);
   });
@@ -81,8 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
   btnGoto.addEventListener('click', () => {
     const gotoPage = parseInt(gotoInput.value);
     if (!pdfDoc || isNaN(gotoPage) || gotoPage < 1 || gotoPage > pdfDoc.numPages) return;
-    pageNum = gotoPage;
-    renderPage(pageNum);
+    renderPage(gotoPage);
   });
 
   // Botones avanzar/retroceder
