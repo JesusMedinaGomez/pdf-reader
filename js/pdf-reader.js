@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const ctx = canvas.getContext('2d');
   const gotoInput = document.getElementById('gotoPage');
   const btnGoto = document.getElementById('btnGoto');
-  const btnPrev = document.getElementById('floatingPrev');
-  const btnNext = document.getElementById('floatingNext');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
   const pageCounter = document.getElementById('pageCounter');
 
   let pdfDoc = null;
@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return data[fileKey] || 1;
   }
 
-  // Renderizar página
   function renderPage(num) {
     if (!pdfDoc) return;
     pdfDoc.getPage(num).then(page => {
@@ -59,25 +58,26 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPage(pageNum);
   }
 
-  // Cargar archivo PDF
+  // Cargar PDF
   fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
     currentFileKey = file.name;
+    const savedPage = loadProgress(currentFileKey);
 
     const reader = new FileReader();
     reader.onload = function() {
       const typedarray = new Uint8Array(this.result);
       pdfjsLib.getDocument(typedarray).promise.then(pdf_ => {
         pdfDoc = pdf_;
-        pageNum = Math.min(loadProgress(currentFileKey), pdfDoc.numPages);
+        pageNum = Math.min(savedPage, pdfDoc.numPages);
         renderPage(pageNum);
       }).catch(err => console.error('Error al cargar PDF:', err));
     };
     reader.readAsArrayBuffer(file);
   });
 
-  // Ir a página
+  // Input ir a página
   btnGoto.addEventListener('click', () => {
     const gotoPage = parseInt(gotoInput.value);
     if (!pdfDoc || isNaN(gotoPage) || gotoPage < 1 || gotoPage > pdfDoc.numPages) return;
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPage(pageNum);
   });
 
-  // Botones flotantes
+  // Botones avanzar/retroceder
   btnPrev.addEventListener('click', () => changePage(-1));
   btnNext.addEventListener('click', () => changePage(1));
 
@@ -93,32 +93,5 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') changePage(-1);
     if (e.key === 'ArrowRight') changePage(1);
-  });
-
-  // Swipe móvil
-  let touchStartX = 0;
-  canvas.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
-  canvas.addEventListener('touchend', e => {
-    let deltaX = e.changedTouches[0].screenX - touchStartX;
-    if (deltaX > 50) changePage(-1);
-    if (deltaX < -50) changePage(1);
-  });
-
-  // Botones flotantes movibles
-  [btnPrev, btnNext].forEach(btn => {
-    let isDragging = false, offsetX, offsetY;
-    btn.addEventListener('mousedown', e => {
-      isDragging = true;
-      offsetX = e.clientX - btn.offsetLeft;
-      offsetY = e.clientY - btn.offsetTop;
-      btn.style.cursor = 'grabbing';
-    });
-    document.addEventListener('mousemove', e => {
-      if (isDragging) {
-        btn.style.left = e.clientX - offsetX + 'px';
-        btn.style.top = e.clientY - offsetY + 'px';
-      }
-    });
-    document.addEventListener('mouseup', () => { isDragging = false; btn.style.cursor = 'grab'; });
   });
 });

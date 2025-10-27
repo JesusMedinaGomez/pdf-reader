@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lector PDF Flotante</title>
+  <title>Lector PDF Simple</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js" defer></script>
   <link rel="stylesheet" href="css/style.css">
   <script src="js/pdf-reader.js" defer></script>
@@ -16,17 +16,17 @@
       <input type="number" id="gotoPage" placeholder="Ir a página..." min="1">
       <button id="btnGoto">Ir</button>
       <span id="pageCounter">/ 0</span>
+      <button id="btnPrev">◀</button>
+      <button id="btnNext">▶</button>
     </div>
   </header>
 
   <main>
     <canvas id="pdf-render"></canvas>
-    <div class="floating-buttons" id="floatingPrev">◀</div>
-    <div class="floating-buttons" id="floatingNext">▶</div>
   </main>
 
   <footer>
-    <p>⚡ 100% local | Persistencia con localStorage | Navegación eficiente</p>
+    <p>⚡ 100% local | Persistencia con localStorage | Navegación con botones</p>
   </footer>
 </body>
 </html>

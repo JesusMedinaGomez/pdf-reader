@@ -20,65 +20,45 @@ h1 {
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  align-items: center;
 }
 
 input[type="file"],
-input[type="number"] {
-  padding: 0.5rem;
+input[type="number"],
+button {
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   border: none;
   background: #162447;
   color: #eaeaea;
   cursor: pointer;
+  font-size: 1rem;
 }
 
 button {
-  padding: 0.6rem 1.2rem;
-  border-radius: 10px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
   background: linear-gradient(135deg, #f0a500, #ff5733);
-  color: white;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  font-weight: 600;
 }
 
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 #pageCounter {
   font-weight: 600;
   color: #f0a500;
   margin-left: 0.5rem;
-  align-self: center;
 }
 
 canvas {
-  margin: auto;
+  margin: 2rem auto;
   display: block;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.5);
   max-width: 100%;
   height: auto;
 }
-
-.floating-buttons {
-  position: fixed;
-  top: 50%;
-  background: linear-gradient(135deg, #f0a500, #ff5733);
-  color: white;
-  font-size: 2rem;
-  padding: 0.5rem 1rem;
-  border-radius: 50%;
-  cursor: grab;
-  user-select: none;
-  z-index: 999;
-}
-
-#floatingPrev { left: 20px; }
-#floatingNext { right: 20px; }
 
 footer {
   margin-top: 2rem;
