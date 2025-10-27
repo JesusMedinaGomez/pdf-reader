@@ -1,37 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lector PDF Persistente</title>
-  
-  <!-- PDF.js -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lector PDF Flotante</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js" defer></script>
-
-  <!-- Estilos -->
-  <link rel="stylesheet" href="css/style.css" />
-
-  <!-- Script principal -->
+  <link rel="stylesheet" href="css/style.css">
   <script src="js/pdf-reader.js" defer></script>
 </head>
 <body>
   <header>
     <h1>Lector PDF Persistente</h1>
-    <p>Abre cualquier PDF local y el sitio recordará tu progreso automáticamente.</p>
+    <div class="top-controls">
+      <input type="file" id="fileInput" accept="application/pdf">
+      <input type="number" id="gotoPage" placeholder="Ir a página..." min="1">
+      <button id="btnGoto">Ir</button>
+      <span id="pageCounter">/ 0</span>
+    </div>
   </header>
 
   <main>
-    <input type="file" id="fileInput" accept="application/pdf" />
-    <div class="controls">
-      <button id="prev">⬅️ Anterior</button>
-      <button id="next">➡️ Siguiente</button>
-    </div>
-    <p>Página <span id="page_num">0</span> de <span id="page_count">0</span></p>
     <canvas id="pdf-render"></canvas>
+    <div class="floating-buttons" id="floatingPrev">◀</div>
+    <div class="floating-buttons" id="floatingNext">▶</div>
   </main>
 
   <footer>
-    <p>⚡ 100% local | Persistencia con localStorage | Sin subir tus archivos</p>
+    <p>⚡ 100% local | Persistencia con localStorage | Navegación eficiente</p>
   </footer>
 </body>
 </html>
